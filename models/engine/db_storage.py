@@ -24,6 +24,7 @@ class DBStorage:
     """interaacts with the MySQL database"""
     __engine = None
     __session = None
+    __f_path = "file.json"
 
     def __init__(self):
         """Instantiate a DBStorage object"""
@@ -74,3 +75,12 @@ class DBStorage:
     def close(self):
         """call remove() method on the private session attribute"""
         self.__session.remove()
+
+    def get(self, cls, id):
+        """ retrieve one object"""
+        obj = self.all(cls)
+        return obj.get(cls + '.' + id)
+
+    def count(self, cls=None):
+        """count the number of objects in storage"""
+        return len(self.all(cls))
