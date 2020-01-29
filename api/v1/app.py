@@ -4,8 +4,6 @@ import os
 from models import storage
 from flask import Flask, jsonify
 from api.v1.views import app_views
-from flask import CORS
-from flasgger import Swagger
 
 
 host = os.environ.get('HBNB_API_HOST', '0.0.0.0')
