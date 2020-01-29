@@ -38,7 +38,11 @@ def state_put(id):
     if do_put is not request.is_json and do_put is None:
         abort(404, "Not a JSON")
     for k, v in do_put.items():
+<<<<<<< HEAD
         if (k is not "id" and k is not "created_at" and k is not "updated_at"):
+=======
+        if k is not "id" and k is not "created_at" and k is not "updated_at":
+>>>>>>> 6fb60893ac8bdb78ce0c372746c82b6f63e3e37b
             setattr(obj_state, k, v)
     obj_state.save()
     return (jsonify(obj_state.to_dict())), 200
