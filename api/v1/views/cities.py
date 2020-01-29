@@ -45,8 +45,8 @@ def city_put(city_id):
     """ city put"""
     obj_city = storage.get('City', id)
     do_put = request.get_json()
-    if do_put is not request.is_json and do_put is None:
-        abort(400, "Not a JSON")
+    if do_put is not request.is_json:
+        return jsonify({"error": "Not a JSON"}), 400
     for k, v in do_put.items():
         if (k is not "id" and k is not "created_at" and
                 k is not "updated_at" and k is not "state_id"):
@@ -70,6 +70,6 @@ def city_post(state_id):
             storage.save()
             return jsonify(new_obj.to_dict()), 201
         else:
-            abort(400, "Missing name")
+            return jsonify({"error": "Missing name"}), 400
     else:
-        abort(400, "Not a JSON")
+        return jsonify({"error": "Not a JSON"}), 400
