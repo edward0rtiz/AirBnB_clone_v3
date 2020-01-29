@@ -1,25 +1,22 @@
 #!/usr/bin/python3
+"""HTTP methods for RESTFul API"""
 
 from api.v1.views import app_views
 from flask import jsonify, abort, request
 from models import storage
 from models.place import Place
 
+
 @app_views.route('/places/<place_id>', methods=['GET', 'PUT', 'DELETE'])
 def place(place_id=None):
-
-    # GET method
+    """ GET, 'PUT, 'DELETE'"""
     obj_place = storage.get("Place", place_id)
     if obj_place is None:
         abort(404)
-
-    # DELETE method
     if request.method == 'DELETE':
         obj_place.delete()
         storage.save()
         return jsonify({}), 200
-
-    # PUT method
     if request.method == 'PUT':
         do_put = request.get_json()
         if obj_place is not request.is_json and do_put is None:
@@ -32,13 +29,12 @@ def place(place_id=None):
         for k, v in do_out.items():
             setattr(obj_place, k, v)
         obj_place.save()
-
-    # Return to_dict
     return jsonify(obj_place.to_dict()), 200
+
 
 @app_views.route('/cities/<city_id>/places', methods=['POST'])
 def place_post(city_id=None):
-    # GET method for city_id
+    """POST method"""
     get_city = storage.get("City", city_id)
     if get_city is None:
         abort(404)
@@ -70,10 +66,13 @@ def place_post(city_id=None):
     new_place.save()
     return jsonify(new_place.to_dict()), 201
 
-@apps_views.route('/cities/<city_id>/places')
+
+@app_views.route('/cities/<city_id>/places')
 def all_place(city_id=None):
-    city_obj = storage.get("City", city_id) is None
-    abort(404)
+    """CREATE places."""
+    city_obj = storage.get("City", city_id)
+    if city_obj is None:
+        abort(404)
     all_p = storage.all("Place").values()
     places = [place.to_dict() for place in all_p if place.city_id == city_id]
     return jsonify(places)

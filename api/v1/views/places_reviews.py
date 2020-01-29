@@ -5,23 +5,23 @@ from flask import jsonify, abort, request
 from models import storage
 from models.review import Review
 
+
 @app_views.route('/reviews/<review_id>', methods=['GET'])
 def reviews(review_id):
+    """GET method for reviews"""
     obj_review = storage.get("Review", review_id)
     if obj_review is None:
         abort(404)
     else:
         return jsonify(obj_review.to_dict())
 
+
 @app_views.route("/reviews/<review_id>", methods=['DELETE', 'PUT'])
 def review_del_put(review_id=None):
-
-    # GET method
+    """DELETE and PUT method for reviews"""
     obj_review = storage.get("Review", review_id)
     if obj_review is None:
         abort(404)
-
-    # DELETE method
     if request.method == 'DELETE':
         obj_review.delete()
         storage.save()
@@ -29,20 +29,21 @@ def review_del_put(review_id=None):
     if request.method == 'PUT':
         if not request.is_json:
             abort(400, "Not a JSON")
-         do_put = request.get_json()
-         for k, v in do_put.items():
-             if (k is not "id" and k is not "created_at" and
-                 k is not "updated_at"
-                 and k is not "user_id" and k is not "place_id"):
-                 setattr(obj_review, k, v)
+        do_put = request.get_json()
+        for k, v in do_put.items():
+            if (k is not "id" and
+                k is not "created_at" and
+                k is not "updated_at" and
+                k is not "user_id" and
+                    k is not "place_id"):
+                setattr(obj_review, k, v)
         obj_review.save()
-
-        # Return to_dict
         return jsonify(obj_review.to_dict()), 200
+
 
 @app_views.route('/places/<place_id>/reviews', methods=['POST'])
 def review_post(place_id):
-    # GET method for place_id
+    """POST method for reviews"""
     get_place = storage.get("Place", place_id)
     if get_place is None:
         abort(404)

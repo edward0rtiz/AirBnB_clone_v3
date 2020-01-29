@@ -5,24 +5,26 @@ from flask import jsonify, abort, request
 from models import storage
 from models.place import Place
 from models.amenity import Amenity
-import os import getenv
+from os import getenv
 import sqlalchemy
 
 db_storage = (getenv("HBNB_TYPE_STORAGE"), "json_file")
 
-# GET method
-@app.views.route('/places/<place_id>/amenities')
+
+@app_views.route('/places/<place_id>/amenities')
 def place_amenities(place=None):
+    """GET method for amenities en place"""
     obj_place_am = storage.get("Place", place_id)
-    if  obj_place_am is None:
-        abort (404)
+    if obj_place_am is None:
+        abort(404)
     return jsonify([am.to_dict() for am
                     in obj_place_am.amenities])
 
-# DELETE method
-@app_views.route(
-    '/places/<place_id>/amenities/<amenity_id>', methods=['DELETE'])
+
+@app_views.route('/places/<place_id>/amenities/<amenity_id>',
+                 methods=['DELETE'])
 def amenity_review_delete(place_id=None, amenity_id=None):
+    """DELETE method for amenities en place"""
     obj_place = storage.get("Place", place_id)
     obj_amenity = storage.get("Amenity", amenity_id)
     if obj_amenity is None or obj_place is None:
@@ -38,9 +40,10 @@ def amenity_review_delete(place_id=None, amenity_id=None):
     obj_place.save()
     return jsonify({}), 200
 
-# POST method
+
 @app_views.route('/places/<place_id>/amenities/<amenity_id>', methods=['POST'])
 def amenity_place(place_id, amenity_id):
+    """POST method for amenities en place"""
     obj_place = storage.get("Place", place_id)
     obj_amenity = storage.get("Amenity", amenity_id)
     if obj_place is None or obj_amenity is None:
