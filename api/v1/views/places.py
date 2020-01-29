@@ -18,21 +18,23 @@ def place(place_id=None):
         obj_place.delete()
         storage.save()
         return jsonify({}), 200
-
     if request.method == 'PUT':
         do_put = request.get_json()
-        if obj_place is not request.is_json:
+        if not do_put:
             abort(400, "Not a JSON")
-        else:
-            obj_place.pop('id', None)
-            obj_place.pop('created_at', None)
-            obj_place.pop('updated_at', None)
-            obj_place.pop('user_id', None)
-            obj_place.pop('city_id', None)
-            for k, v in do_out.items():
+
+        obj_place.pop('id', None)
+        obj_place.pop('created_at', None)
+        obj_place.pop('updated_at', None)
+        obj_place.pop('user_id', None)
+        obj_place.pop('city_id', None)
+        for k, v in do_out.items():
+            if (k is not "id" and k is not "created_at" and
+                    k is not "updated_at" and k is not "user_id" and
+                    k is not "city_id"):
                 setattr(obj_place, k, v)
-            obj_place.save()
-            return jsonify(obj_place.to_dict()), 200
+        obj_place.save()
+        return jsonify(obj_place.to_dict()), 200
 
 
 @app_views.route('/cities/<city_id>/places', methods=['POST'])
