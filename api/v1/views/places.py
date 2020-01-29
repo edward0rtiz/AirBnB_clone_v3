@@ -13,23 +13,26 @@ def place(place_id=None):
     obj_place = storage.get("Place", place_id)
     if obj_place is None:
         abort(404)
+
     if request.method == 'DELETE':
         obj_place.delete()
         storage.save()
         return jsonify({}), 200
+
     if request.method == 'PUT':
         do_put = request.get_json()
-        if obj_place is not request.is_json and do_put is None:
+        if obj_place is not request.is_json:
             abort(400, "Not a JSON")
-        obj_place.pop('id', None)
-        obj_place.pop('created_at', None)
-        obj_place.pop('updated_at', None)
-        obj_place.pop('user_id', None)
-        obj_place.pop('city_id', None)
-        for k, v in do_out.items():
-            setattr(obj_place, k, v)
-        obj_place.save()
-    return jsonify(obj_place.to_dict()), 200
+        else:
+            obj_place.pop('id', None)
+            obj_place.pop('created_at', None)
+            obj_place.pop('updated_at', None)
+            obj_place.pop('user_id', None)
+            obj_place.pop('city_id', None)
+            for k, v in do_out.items():
+                setattr(obj_place, k, v)
+            obj_place.save()
+            return jsonify(obj_place.to_dict()), 200
 
 
 @app_views.route('/cities/<city_id>/places', methods=['POST'])
