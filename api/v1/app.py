@@ -22,9 +22,9 @@ def close(cls):
 @app.errorhandler(404)
 def not_found(e):
     """error 404"""
-    return (jsonify({"error": "Not found"}), 404)
+    return jsonify({"error": "Not found"}), 404
 
 
 if __name__ == '__main__':
     """Initialize api"""
-    app.run(host=host, port=port, threaded=True, debug=True)
+    app.run(host=host, port=int(port), threaded=True)
