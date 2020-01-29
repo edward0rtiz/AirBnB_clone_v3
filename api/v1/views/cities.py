@@ -1,11 +1,12 @@
 #!/usr/bin/python3
+"""City for RESTFul API"""
 from api.v1.views import app_views
 from flask import jsonify, abort, request
 from models import storage
 from models.city import City
 
 
-@app_views.route('/states/<id>/cities', methods=['GET'])
+@app_views.route('/states/<state_id>/cities', methods=['GET'])
 def state_id(id=None, state_id=None):
     """state, cities  id get"""
     list_cities = []
@@ -18,7 +19,7 @@ def state_id(id=None, state_id=None):
         return jsonify(list_cities)
 
 
-@app_views.route('/cities/<id>', methods=['GET'])
+@app_views.route('/cities/<id>')
 def cities(id=None):
     """citie get"""
     state_objs = storage.get("City", id)
@@ -28,7 +29,7 @@ def cities(id=None):
         return jsonify(state_objs.to_dict())
 
 
-@app_views.route('/cities/<id>', methods=['DELETE'])
+@app_views.route('/cities/<city_id>', methods=['DELETE'])
 def cities_delete(city_id=None):
     """ delete city"""
     obj_city = storage.get('City', city_id)
@@ -39,7 +40,7 @@ def cities_delete(city_id=None):
     return jsonify({}), 200
 
 
-@app_views.route('/cities/<id>', methods=['PUT'])
+@app_views.route('/cities/<city_id>', methods=['PUT'])
 def city_put(city_id):
     """ city put"""
     obj_city = storage.get('City', id)
@@ -54,7 +55,7 @@ def city_put(city_id):
     return (jsonify(obj_city.to_dict())), 200
 
 
-@app_views.route('/states/<id>/cities', methods=['POST'])
+@app_views.route('/states/<state_id>/cities', methods=['POST'])
 def city_post(state_id):
     """ city post"""
     obj_state = storage.get("State", state_id)
