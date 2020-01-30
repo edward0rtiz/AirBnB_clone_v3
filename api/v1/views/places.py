@@ -7,16 +7,6 @@ from models import storage
 from models.place import Place
 
 
-@app_views.route('/places/<place_id>')
-def get_places(place_id=None):
-    """GET place method"""
-    places = storage.get("Place", place_id)
-    if places is None:
-        abort(404)
-    else:
-        return jsonify(place.to_dict())
-
-
 @app_views.route('/cities/<city_id>/places')
 def all_place(city_id=None):
     """GET places within cities"""
@@ -30,6 +20,16 @@ def all_place(city_id=None):
         return jsonify(list_places)
 
 
+@app_views.route('/places/<place_id>')
+def get_places(place_id=None):
+    """GET place method"""
+    places = storage.get("Place", place_id)
+    if places is None:
+        abort(404)
+    else:
+        return jsonify(places.to_dict()), 200
+
+
 @app_views.route('/places/<place_id>', methods=['DELETE', 'PUT'])
 def place(place_id=None):
     """'DELETE' methods"""
@@ -40,6 +40,25 @@ def place(place_id=None):
         obj_place.delete()
         storage.save()
         return jsonify({}), 200
+    if request.method == 'PUT':
+        if not request.is_json:
+            abort(400, "Not a JSON")
+        do_put = request.get_json()
+        for k, v in do_put.items():
+            if(k is not "id" and k is not "created_at" and
+               k is not "updated_at" and k is not "user_id" and
+               k is not "city_id"):
+                setattr(obj_place, k, v)
+        obj_place.save()
+        return jsonify(place.to_dict()), 200
+
+
+@app_views.route('/cities/<city_id>/places', methods=['POST'])
+def place_post(city_id):
+    """POST method"""
+    city_objs = storage.get("City", city_id)
+    if city is None:
+        abort(404)
     if not request.is_json:
         abort(400, "Not a JSON")
     if 'user_id' not in request.is_json:
