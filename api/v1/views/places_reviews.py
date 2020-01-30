@@ -26,7 +26,8 @@ def review_pl(place_id=None):
     else:
         obj_review = storage.all("Review").values()
         for review in obj_review:
-            list_review.append(review.to_dict())
+            if review.place_id == place_id:
+                list_review.append(review.to_dict())
         return jsonify(list_review)
 
 
