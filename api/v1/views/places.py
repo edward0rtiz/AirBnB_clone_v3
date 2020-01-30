@@ -47,8 +47,8 @@ def place_methods(place_id=None):
             abort(400, "Not a JSON")
         do_put = request.get_json()
         for k, v in do_put.items():
-            if(k is not "id" and k is not "created_at" and \
-               k is not "updated_at" and \
+            if(k is not "id" and k is not "created_at" and
+               k is not "updated_at" and
                k is not "user_id" and k is not "city_id"):
                 setattr(obj_place, k, v)
         obj_place.save()
@@ -64,14 +64,15 @@ def place_post(city_id):
     if not request.is_json:
         return jsonify({"error": "Not a JSON"}), 400
     if 'user_id' not in request.json:
-        return jsonify({"error": "Missing name"}), 400
-    if 'name' not in request.json:
         return jsonify({"error": "Missing user_id"}), 400
+    if 'name' not in request.json:
+        return jsonify({"error": "Missing name"}), 400
     do_post = request.get_json()
     new_usr = do_post.get("user_id")
     usr = storage.get("User", user_id)
     if usr is None:
         abort(404)
+    #do_post['city_id'] = str(city_id)
     new_place = Place(**do_post)
     setattr(new_place, "city_id", city_id)
     storage.do_post(new_place)

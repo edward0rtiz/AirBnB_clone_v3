@@ -14,11 +14,15 @@ db_storage = (getenv("HBNB_TYPE_STORAGE"), "json_file")
 @app_views.route('/places/<place_id>/amenities')
 def place_amenities(place=None):
     """GET method for amenities en place"""
+    list_amenities = []
     obj_place_am = storage.get("Place", place_id)
     if obj_place_am is None:
         abort(404)
-    return jsonify([am.to_dict() for am
-                    in obj_place_am.amenities])
+    else:
+        if db == "db":
+            for amenity in obj_place_am.list_amenities:
+                list_amenities.append(amenity.to_dict())
+            return jsonify(obj_place_am.list_amenities())
 
 
 @app_views.route('/places/<place_id>/amenities/<amenity_id>',
@@ -30,13 +34,13 @@ def amenity_review_delete(place_id=None, amenity_id=None):
     if obj_amenity is None or obj_place is None:
         abort(404)
     list = [item.id for item in obj_place.amenities]
-    if amenity.id not in list:
+    if obj_amenity.id not in list:
         abort(404)
 
     if db == 'db':
-        obj_place.amenities.remove(amenity)
+        obj_place.amenities.remove(obj_amenity)
     else:
-        obj_place.amenities().remove(amenity.id)
+        obj_place.amenities().remove(obj_amenity.id)
     obj_place.save()
     return jsonify({}), 200
 

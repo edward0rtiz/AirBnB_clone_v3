@@ -24,7 +24,8 @@ def review_pl(place_id=None):
     if obj_place is None:
         abort(404)
     else:
-        for review in obj_place.list_reviews:
+        obj_review = storage.all("Review").values()
+        for review in obj_review:
             list_reviews.append(review.to_dict())
         return jsonify(list_reviews)
 
@@ -37,11 +38,11 @@ def review_del_put(review_id=None):
     if request.method == 'DELETE':
         obj_review.delete()
         storage.save()
-        return jsonify({}), 200
+        return (jsonify({})), 200
     if request.method == 'PUT':
-        if not request.is_json:
-            abort(400, "Not a JSON")
         do_put = request.get_json()
+        if not do_put:
+            return jsonify({"error": "Not a JSON"}), 400
         for k, v in do_put.items():
             if (k is not "id" and
                 k is not "created_at" and
@@ -59,19 +60,20 @@ def review_post(place_id):
     get_place = storage.get("Place", place_id)
     if get_place is None:
         abort(404)
-    if not request.is_json:
-        abort(400, "Not a JSON")
+    if not request.json:
+        return jsonify({"error": "Not a JSON"}), 400
     if 'user_id' not in request.json:
-        abort(400, "Missing user_id")
-    if 'text' not in request.json:
-        abort(400, "Missing text")
+        return jsonify({"error": "Missing user_id"}), 400
     do_post = request.get_json()
     user_id = do_post.get("user_id")
     user = storage.get("User", user_id)
     if user is None:
         abort(404)
-    new_review = Review(**do_post)
+    if 'text' not in do_post.keys():
+        return jsonify({"error": "Missing text"}), 400
+    #do_post["place_id"] = str(place_id)
     setattr(new_review, "place_id", place_id)
-    storage.do_post(new_review)
+    new_review = Review(**do_post)
+    #storage.do_post(new_review)
     storage.save()
     return jsonify(new_review.to_dict()), 201
