@@ -29,12 +29,11 @@ def amenity_delete(id=None):
     if request.method == 'PUT':
         do_put = request.get_json()
         if not do_put:
-            abort(400, "Not a JSON")
+            return jsonify({'error': 'Not a JSON'}), 400
         [setattr(obj_amenity, k, v) for k, v in do_put.items()
          if k not in ["id", "created_at", "updated_at"]]
     obj_amenity.save()
     return jsonify(obj_amenity.to_dict()), 200
-
 
 
 @app_views.route('/amenity', methods=['POST'])
@@ -47,6 +46,6 @@ def amenity_post():
             new_obj.save()
             return jsonify(new_obj.to_dict()), 201
         else:
-            abort(400, "Missing name")
+            return jsonify({'error': 'Missing name'}), 400
     else:
-        abort(400, "Not a JSON")
+        return jsonify({'error': 'Not a JSON'}), 400
