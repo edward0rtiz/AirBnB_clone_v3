@@ -49,7 +49,7 @@ def state_post():
     if do_post is not request.is_json:
         if "name" in do_post:
             new_obj = State(**do_post)
-            storage.new(new_obj)
+            storage.do_post(new_obj)
             storage.save()
             return jsonify(new_obj.to_dict()), 201
         else:
