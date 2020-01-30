@@ -15,8 +15,10 @@ def all_place(city_id=None):
     if city_obj is None:
         abort(404)
     else:
-        for place in city_obj.list_places:
-            list_places.append(city_obj.to_dict())
+        all_places = storage.all("Place").values()
+        for place in all_places:
+            if place.city_id == str(city_id):
+                list_places.append(place.to_dict())
         return jsonify(list_places)
 
 
@@ -39,38 +41,39 @@ def place_methods(place_id=None):
     if request.method == 'DELETE':
         obj_place.delete()
         storage.save()
-        return jsonify({}), 200
+        return (jsonify({}), 200)
     if request.method == 'PUT':
         if not request.is_json:
             abort(400, "Not a JSON")
         do_put = request.get_json()
         for k, v in do_put.items():
-            if(k is not "id" and k is not "created_at" and
-                    k is not "updated_at" and
-                    k is not "user_id" and k is not "city_id"):
+            if(k is not "id" and k is not "created_at" and \
+               k is not "updated_at" and \
+               k is not "user_id" and k is not "city_id"):
                 setattr(obj_place, k, v)
         obj_place.save()
-        return jsonify(place.to_dict()), 200
+        return (jsonify(obj_place.to_dict()), 200)
 
 
 @app_views.route('/cities/<city_id>/places', methods=['POST'])
 def place_post(city_id):
     """POST method"""
     city_objs = storage.get("City", city_id)
-    if city is None:
+    if city_objs is None:
         abort(404)
     if not request.is_json:
-        abort(400, "Not a JSON")
-    if 'user_id' not in request.is_json:
-        abort(400, "Missing user_id")
-    if 'name' not in request.is_json:
-        abort(400, "Missing name")
+        return jsonify({"error": "Not a JSON"}), 400
+    if 'user_id' not in request.json:
+        return jsonify({"error": "Missing name"}), 400
+    if 'name' not in request.json:
+        return jsonify({"error": "Missing user_id"}), 400
     do_post = request.get_json()
     new_usr = do_post.get("user_id")
-    if storage.get("User", user_id) is None:
+    usr = storage.get("User", user_id)
+    if usr is None:
         abort(404)
     new_place = Place(**do_post)
     setattr(new_place, "city_id", city_id)
     storage.do_post(new_place)
     storage.save()
-    return jsonify(place.to_dict()), 201
+    return (jsonify(new_place.to_dict()), 201)
