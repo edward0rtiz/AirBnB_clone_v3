@@ -29,6 +29,7 @@ def review_pl(place_id=None):
             list_reviews.append(review.to_dict())
         return jsonify(list_reviews)
 
+
 @app_views.route('/reviews/<review_id>', methods=['DELETE', 'PUT'])
 def review_del_put(review_id=None):
     """DELETE and PUT method for reviews"""
@@ -71,9 +72,9 @@ def review_post(place_id):
         abort(404)
     if 'text' not in do_post.keys():
         return jsonify({"error": "Missing text"}), 400
-    #do_post["place_id"] = str(place_id)
+    """do_post["place_id"] = str(place_id)"""
     setattr(new_review, "place_id", place_id)
     new_review = Review(**do_post)
-    #storage.do_post(new_review)
+    """storage.do_post(new_review)"""
     storage.save()
     return jsonify(new_review.to_dict()), 201

@@ -72,7 +72,7 @@ def place_post(city_id):
     usr = storage.get("User", user_id)
     if usr is None:
         abort(404)
-    #do_post['city_id'] = str(city_id)
+    """do_post['city_id'] = str(city_id)"""
     new_place = Place(**do_post)
     setattr(new_place, "city_id", city_id)
     storage.do_post(new_place)
