@@ -27,6 +27,11 @@ def state_delete(id=None):
     obj_state = storage.get('State', id)
     if obj_state is None:
         abort(404)
+    if request.method == 'DELETE':
+        obj_state.delete()
+        storage.save()
+        return (jsonify({}), 200)
+
     if request.method == 'PUT':
         do_put = request.get_json()
         if not do_put:
@@ -35,10 +40,6 @@ def state_delete(id=None):
          if k not in ["id", "created_at", "updated_at"]]
     obj_state.save()
     return jsonify(obj_state.to_dict()), 200
-    if request.method == 'DELETE':
-        obj_state.delete()
-        storage.save()
-        return jsonify({}), 200
 
 
 @app_views.route('/states', methods=['POST'])
