@@ -6,7 +6,7 @@ from models import storage
 from models.user import User
 
 
-@app_views.route('/users', method=['GET'])
+@app_views.route('/users', methods=['GET'])
 def user(id=None):
     """user"""
     list_user = []
