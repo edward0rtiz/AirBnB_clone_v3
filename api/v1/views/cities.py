@@ -15,7 +15,8 @@ def state_id(state_id=None):
         abort(404)
     else:
         for city_obj in storage.all("City").values():
-            list_cities.append(city_obj.to_dict())
+            if city_obj.state_id == str(state_id):
+                list_cities.append(city_obj.to_dict())
         return jsonify(list_cities)
 
 
@@ -47,7 +48,7 @@ def city_put(id):
     if obj_city is None:
         abort(404)
     do_put = request.get_json()
-    if not do_put:
+    if not request.get_json():
         return jsonify({"error": "Not a JSON"}), 400
     for k, v in do_put.items():
         if k is not "id" and k is not "created_at":
@@ -61,15 +62,14 @@ def city_put(id):
 def city_post(state_id):
     """ city post"""
     obj_state = storage.get("State", state_id)
-    do_post = request.get_json()
     if obj_state is None:
         abort(404)
-    if do_post is not request.is_json:
-        if "name" in do_post:
+    if request.json:
+        if "name" in request.json:
+            do_post = request.get_json()
+            do_post["state_id"] = str(state_id)
             new_obj = City(**do_post)
-            setattr(new_obj, "state_id", state_id)
-            storage.new(new_obj)
-            storage.save()
+            new_obj.save()
             return jsonify(new_obj.to_dict()), 201
         else:
             return jsonify({"error": "Missing name"}), 400
