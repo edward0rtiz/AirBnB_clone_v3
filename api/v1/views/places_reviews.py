@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+"""HTTP methods for API"""
 
 from api.v1.views import app_views
 from flask import jsonify, abort, request
@@ -16,7 +17,18 @@ def reviews(review_id):
         return jsonify(obj_review.to_dict())
 
 
-@app_views.route("/reviews/<review_id>", methods=['DELETE', 'PUT'])
+@app_views.route('/places/<place_id>/reviews')
+def review_pl(place_id=None):
+    list_review = []
+    obj_place = storage.get("Place", place_id)
+    if obj_place is None:
+        abort(404)
+    else:
+        for review in obj_place.list_reviews:
+            list_reviews.append(review.to_dict())
+        return jsonify(list_reviews)
+
+@app_views.route('/reviews/<review_id>', methods=['DELETE', 'PUT'])
 def review_del_put(review_id=None):
     """DELETE and PUT method for reviews"""
     obj_review = storage.get("Review", review_id)
