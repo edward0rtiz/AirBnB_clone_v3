@@ -7,19 +7,19 @@ from models.city import City
 
 
 @app_views.route('/states/<state_id>/cities', methods=['GET'])
-def state_id(id=None, state_id=None):
+def state_id(state_id=None):
     """state, cities  id get"""
     list_cities = []
-    state_obj = storage.get('State', state_id)
+    state_obj = storage.get('State', str(state_id))
     if state_obj is None:
         abort(404)
     else:
-        for city_obj in state_obj.list_cities:
+        for city_obj in storage.all("City").values():
             list_cities.append(city_obj.to_dict())
         return jsonify(list_cities)
 
 
-@app_views.route('/cities/<id>')
+@app_views.route('/cities/<id>', methods=["GET"])
 def cities(id=None):
     """citie get"""
     state_objs = storage.get("City", id)
@@ -40,17 +40,19 @@ def cities_delete(city_id=None):
     return jsonify({}), 200
 
 
-@app_views.route('/cities/<city_id>', methods=['PUT'])
-def city_put(city_id):
+@app_views.route('/cities/<id>', methods=['PUT'])
+def city_put(id):
     """ city put"""
     obj_city = storage.get('City', id)
+    if obj_city is None:
+        abort(404)
     do_put = request.get_json()
-    if do_put is not request.is_json:
+    if not do_put:
         return jsonify({"error": "Not a JSON"}), 400
     for k, v in do_put.items():
-        if (k is not "id" and k is not "created_at" and
-                k is not "updated_at" and k is not "state_id"):
-            setattr(obj_city, k, v)
+        if k is not "id" and k is not "created_at":
+            if k is not "updated_at" and k is not "state_id":
+                setattr(obj_city, k, v)
     obj_city.save()
     return (jsonify(obj_city.to_dict())), 200
 
