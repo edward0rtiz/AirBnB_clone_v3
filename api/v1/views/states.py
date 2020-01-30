@@ -45,12 +45,11 @@ def state_delete(id=None):
 @app_views.route('/states', methods=['POST'])
 def state_post():
     """state post"""
-    do_post = request.get_json()
-    if do_post is not request.is_json:
-        if "name" in do_post:
+    if request.json:
+        if "name" in request.json:
+            do_post = request.get_json()
             new_obj = State(**do_post)
-            storage.new(new_obj)
-            storage.save()
+            new_obj.save()
             return jsonify(new_obj.to_dict()), 201
         else:
             abort(400, "Missing name")
