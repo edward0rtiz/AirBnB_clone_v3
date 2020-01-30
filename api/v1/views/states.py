@@ -33,7 +33,7 @@ def state_delete(id=None):
         if not do_put:
             abort(400, "Not a JSON")
         [setattr(obj_state, k, v) for k, v in do_put.items()
-        if k not in ["id", "created_at", "updated_at"]]
+         if k not in ["id", "created_at", "updated_at"]]
     obj_state.save()
     if request.method == 'DELETE':
         obj_state.delete()
