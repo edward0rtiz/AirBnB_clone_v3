@@ -6,7 +6,6 @@ from models import storage
 from models.state import State
 
 
-@app_views.route('/states/<id>')
 @app_views.route('/states')
 def state(id=None):
     """state"""
