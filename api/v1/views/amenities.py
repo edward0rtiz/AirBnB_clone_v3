@@ -6,7 +6,7 @@ from models import storage
 from models.amenity import Amenity
 
 
-@app_views.route('/amenities')
+@app_views.route('/amenities', methods=['GET'])
 def amenity():
     """state"""
     list_amenity = []
@@ -18,7 +18,7 @@ def amenity():
 @app_views.route('/amenities/<id>', methods=['GET', 'DELETE', 'PUT'])
 def amenity_delete(id=None):
     """state delete"""
-    obj_amenity = storage.get('State', id)
+    obj_amenity = storage.get('Amenity', id)
     if obj_amenity is None:
         abort(404)
     if request.method == 'DELETE':
@@ -34,6 +34,7 @@ def amenity_delete(id=None):
          if k not in ["id", "created_at", "updated_at"]]
     obj_amenity.save()
     return jsonify(obj_amenity.to_dict()), 200
+
 
 
 @app_views.route('/amenity', methods=['POST'])
