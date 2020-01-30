@@ -6,7 +6,7 @@ from models import storage
 from models.user import User
 
 
-@app_views.route('/user')
+@app_views.route('/users')
 def user(id=None):
     """user"""
     list_user = []
@@ -15,7 +15,7 @@ def user(id=None):
     return jsonify(list_user)
 
 
-@app_views.route('/user/<id>', methods=['GET', 'DELETE', 'PUT'])
+@app_views.route('/users/<id>', methods=['GET', 'DELETE', 'PUT'])
 def user_delete(id=None):
     """user delete"""
     obj_user = storage.get('User', id)
@@ -36,7 +36,7 @@ def user_delete(id=None):
     return jsonify(obj_user.to_dict()), 200
 
 
-@app_views.route('/user', methods=['POST'])
+@app_views.route('/users', methods=['POST'])
 def user_post():
     """user post"""
     if request.json:
