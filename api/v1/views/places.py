@@ -9,6 +9,7 @@ from models.place import Place
 
 @app_views.route('/places/<place_id>')
 def get_places(place_id=None):
+    """GET place method"""
     places = storage.get("Place", place_id)
     if places is None:
         abort(404)
@@ -18,7 +19,7 @@ def get_places(place_id=None):
 
 @app_views.route('/cities/<city_id>/places')
 def all_place(city_id=None):
-    """CREATE places."""
+    """GET places within cities"""
     list_places = []
     city_obj = storage.get("City", city_id)
     if city_obj is None:
@@ -29,9 +30,9 @@ def all_place(city_id=None):
         return jsonify(list_places)
 
 
-@app_views.route('/places/<place_id>', methods=['PUT', 'DELETE'])
+@app_views.route('/places/<place_id>', methods=['DELETE', 'PUT'])
 def place(place_id=None):
-    """'PUT, 'DELETE' methods"""
+    """'DELETE' methods"""
     obj_place = storage.get("Place", place_id)
     if obj_place is None:
         abort(404)
@@ -43,7 +44,7 @@ def place(place_id=None):
         if not request.is_json:
             abort(400, "Not a JSON")
         do_put = request.get_json()
-        for k, v in do_out.items():
+        for k, v in do_put.items():
             if (k is not "id" and k is not "created_at" and
                     k is not "updated_at" and k is not "user_id" and
                     k is not "city_id"):
