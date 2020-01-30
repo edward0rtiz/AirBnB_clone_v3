@@ -26,7 +26,7 @@ def state(id=None):
 def state_delete(id=None):
     """state delete"""
     obj_state = storage.get('State', id)
-    if not obj_state:
+    if obj_state is None:
         abort(404)
     if request.method == 'PUT':
         do_put = request.get_json()
@@ -35,11 +35,11 @@ def state_delete(id=None):
         [setattr(obj_state, k, v) for k, v in do_put.items()
          if k not in ["id", "created_at", "updated_at"]]
     obj_state.save()
+    return jsonify(obj_state.to_dict()), 200
     if request.method == 'DELETE':
         obj_state.delete()
         storage.save()
         return jsonify({}), 200
-    return jsonify(obj_state.to_dict()), 200
 
 
 @app_views.route('/states', methods=['POST'])
@@ -53,6 +53,6 @@ def state_post():
             storage.save()
             return jsonify(new_obj.to_dict()), 201
         else:
-            abort(404, "Missing name")
+            abort(400, "Missing name")
     else:
-        abort(404, "Not a JSON")
+        abort(400, "Not a JSON")
