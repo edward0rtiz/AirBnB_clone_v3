@@ -69,12 +69,10 @@ def place_post(city_id):
         return jsonify({"error": "Missing name"}), 400
     do_post = request.get_json()
     new_usr = do_post.get("user_id")
-    usr = storage.get("User", user_id)
+    usr = storage.get("User", new_usr)
     if usr is None:
         abort(404)
-    """do_post['city_id'] = str(city_id)"""
     new_place = Place(**do_post)
     setattr(new_place, "city_id", city_id)
-    storage.do_post(new_place)
-    storage.save()
+    new_place.save()
     return (jsonify(new_place.to_dict()), 201)
