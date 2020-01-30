@@ -47,14 +47,14 @@ def city_put(id):
     if obj_city is None:
         abort(404)
     do_put = request.get_json()
-    if not request.get_json:
+    if not do_put:
         return jsonify({"error": "Not a JSON"}), 400
     for k, v in do_put.items():
         if k is not "id" and k is not "created_at":
             if k is not "updated_at" and k is not "state_id":
                 setattr(obj_city, k, v)
     obj_city.save()
-    return (jsonify(obj_city.to_dict()), 200)
+    return jsonify(obj_city.to_dict()), 200
 
 
 @app_views.route('/states/<state_id>/cities', methods=['POST'])
