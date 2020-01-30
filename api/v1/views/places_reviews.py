@@ -73,8 +73,8 @@ def review_post(place_id):
     if 'text' not in do_post.keys():
         return jsonify({"error": "Missing text"}), 400
     """do_post["place_id"] = str(place_id)"""
-    setattr(new_review, "place_id", place_id)
     new_review = Review(**do_post)
+    setattr(new_review, "place_id", place_id)
     """storage.do_post(new_review)"""
     new_review.save()
     return jsonify(new_review.to_dict()), 201
