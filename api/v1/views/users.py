@@ -6,7 +6,7 @@ from models import storage
 from models.user import User
 
 
-@app_views.route('/users')
+@app_views.route('/users', method=['GET'])
 def user(id=None):
     """user"""
     list_user = []
@@ -32,7 +32,7 @@ def user_delete(id=None):
             abort(400, "Not a JSON")
         [setattr(obj_user, k, v) for k, v in do_put.items()
          if k not in ["id", "email", "created_at", "updated_at"]]
-    obj_state.save()
+    obj_user.save()
     return jsonify(obj_user.to_dict()), 200
 
 
