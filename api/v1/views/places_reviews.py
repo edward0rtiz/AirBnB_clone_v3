@@ -26,8 +26,8 @@ def review_pl(place_id=None):
     else:
         obj_review = storage.all("Review").values()
         for review in obj_review:
-            list_reviews.append(review.to_dict())
-        return jsonify(list_reviews)
+            list_review.append(review.to_dict())
+        return jsonify(list_review)
 
 
 @app_views.route('/reviews/<review_id>', methods=['DELETE', 'PUT'])
@@ -76,5 +76,5 @@ def review_post(place_id):
     setattr(new_review, "place_id", place_id)
     new_review = Review(**do_post)
     """storage.do_post(new_review)"""
-    storage.save()
+    new_review.save()
     return jsonify(new_review.to_dict()), 201
