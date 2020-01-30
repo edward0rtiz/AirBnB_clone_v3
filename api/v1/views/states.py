@@ -6,46 +6,40 @@ from models import storage
 from models.state import State
 
 
-@app_views.route('/states/<id>', methods=['GET'])
-@app_views.route('/states', methods=['GET'])
+@app_views.route('/states/<id>')
+@app_views.route('/states')
 def state(id=None):
     """state"""
     list_state = []
-    if id is not None:
+    if id:
         state_objs = storage.get('State', id)
-        if not state_objs:
+        if state_objs is None:
             abort(404)
-        return jsonify(state_objs.to_dict())
-    else:
-        state_objs = storage.all("State")
-        for states in state_objs.values():
-            list_state.append(states.to_dict())
-        return jsonify(list_state)
+        else:
+            return jsonify(state_objs.to_dict())
+    for state_objs in storage.all('State').values():
+            list_state.append(state_objs.to_dict())
+    return jsonify(list_state)
 
 
-@app_views.route('/states/<id>', methods=['DELETE'])
-def state_delete(id):
+@app_views.route('/states/<id>', methods=['GET', 'DELETE', 'PUT'])
+def state_delete(id=None):
     """state delete"""
     obj_state = storage.get('State', id)
-    if obj_state is None:
+    if not obj_state:
         abort(404)
-    storage.delete(obj_state)
-    storage.save()
-    return jsonify({}), 200
-
-
-@app_views.route('/states/<id>', methods=['PUT'])
-def state_put(id):
-    """state put"""
-    obj_state = storage.get('State', id)
-    do_put = request.get_json()
-    if do_put is not request.is_json and do_put is None:
-        abort(404, "Not a JSON")
-    for k, v in do_put.items():
-        if (k is not "id" and k is not "created_at" and k is not "updated_at"):
-            setattr(obj_state, k, v)
+    if request.method == 'PUT':
+        do_put = request.get_json()
+        if not do_put:
+            abort(400, "Not a JSON")
+        [setattr(obj_state, k, v) for k, v in do_put.items()
+        if k not in ["id", "created_at", "updated_at"]]
     obj_state.save()
-    return (jsonify(obj_state.to_dict())), 200
+    if request.method == 'DELETE':
+        obj_state.delete()
+        storage.save()
+        return jsonify({}), 200
+    return jsonify(obj_state.to_dict()), 200
 
 
 @app_views.route('/states', methods=['POST'])
