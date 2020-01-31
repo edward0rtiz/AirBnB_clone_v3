@@ -5,11 +5,10 @@ from models import storage
 from flask import Flask, jsonify
 from api.v1.views import app_views
 from flask_cors import CORS
-from flask_swagger import swagger
 """from flasgger import Swagger"""
 
 app = Flask(__name__)
-swagge = swagger(app)
+"""swagger = swagger(app)"""
 db = os.environ.get('HBNB_TYPE_STORAGE', 'json_file')
 host = os.environ.get('HBNB_API_HOST', '0.0.0.0')
 port = os.environ.get('HBNB_API_PORT', '5000')
