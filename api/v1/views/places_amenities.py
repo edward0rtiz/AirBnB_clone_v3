@@ -34,13 +34,13 @@ def amenity_review_delete(place_id=None, amenity_id=None):
         abort(404)
     if obj_place is None:
         abort(404)
-    amenities = obj_place.obj_amenity
+    amenities = obj_place.amenities
     list_am = [am.id for am in amenities]
     if amenity_id not in list_am:
         abort(404)
     for am in amenities:
         if am.id == amenity_id:
-            am.delete()
+            obj_amenity.delete()
     storage.save()
     return (jsonify({})), 200
 
