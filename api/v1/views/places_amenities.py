@@ -30,17 +30,19 @@ def amenity_review_delete(place_id=None, amenity_id=None):
     """DELETE method for amenities en place"""
     obj_place = storage.get("Place", place_id)
     obj_amenity = storage.get("Amenity", amenity_id)
-    if obj_amenity is None or obj_place is None:
+    if obj_amenity is None:
         abort(404)
-    list = [item.id for item in obj_place.amenities]
-    if obj_amenity.id not in list:
+    if obj_place is None:
         abort(404)
-    if db == 'db':
-        obj_place.amenities.remove(obj_amenity)
-    else:
-        obj_place.amenities().remove(obj_amenity.id)
-    obj_place.save()
-    return jsonify({}), 200
+    amenities = obj_place.obj_amenity
+    list_am = [am.id for am in amenities]
+    if amenity_id not in list_am:
+        abort(404)
+    for am in amenities:
+        if am.id == amenity_id:
+            am.delete()
+    storage.save()
+    return (jsonify({})), 200
 
 
 @app_views.route('/places/<place_id>/amenities/<amenity_id>', methods=['POST'])
