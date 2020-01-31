@@ -29,11 +29,12 @@ app.config['SWAGGER'] = {
             "title": "HBNB API",
             "endpoint": 'v1_views',
             "description": 'AirBnB clone - RESTful API',
-            "route": '/api/v1/views',
+            "route": '/v1/views',
         }
     ]
 }
 swagger = Swagger(app)
+
 
 @app.teardown_appcontext
 def close(cls):
