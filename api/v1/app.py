@@ -21,19 +21,20 @@ app.config['SWAGGER'] = {
     "headers": [
         ('Access-Control-Allow-Origin', '*'),
         ('Access-Control-Allow-Methods', "GET, POST, PUT, DELETE, OPTIONS"),
-        ('Access-Control-Allow-Credentials', "true"),
-    ],
+        ('Access-Control-Allow-Credentials', "true")
+        ],
     "specs": [
         {
             "version": "1.0",
             "title": "HBNB API",
             "endpoint": 'v1_views',
             "description": 'AirBnB clone - RESTful API',
-            "route": '/api/v1/views',
-        }
-    ]
-}
+            "route": '/api/v1/views'
+            }
+        ]
+    }
 swagger = Swagger(app)
+
 
 @app.teardown_appcontext
 def close(cls):
