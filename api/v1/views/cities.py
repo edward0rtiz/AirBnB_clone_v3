@@ -8,7 +8,22 @@ from models.city import City
 
 @app_views.route('/states/<state_id>/cities', methods=['GET'])
 def state_id(state_id=None):
-    """state, cities  id get"""
+    """Cities
+    ---
+    tags:
+        - City
+    parameters:
+      - name:  state_id
+        in: path
+        type: string
+    responses:
+      200:
+        description: List of states
+      404:
+        description: Resource not found
+      400:
+        description: Not a JSON
+    """
     list_cities = []
     state_obj = storage.get('State', str(state_id))
     if state_obj is None:
@@ -20,10 +35,25 @@ def state_id(state_id=None):
         return jsonify(list_cities)
 
 
-@app_views.route('/cities/<id>', methods=["GET"])
+@app_views.route('/cities/<city_id>', methods=["GET"])
 def cities(id=None):
-    """citie get"""
-    state_objs = storage.get("City", id)
+    """Cities
+    ---
+    tags:
+        - City
+    parameters:
+      - name: city_id
+        in: path
+        type: string
+    responses:
+      200:
+        description: List of states
+      404:
+        description: Resource not found
+      400:
+        description: Not a JSON
+    """
+    state_objs = storage.get("City", city_id)
     if not state_objs:
         abort(404)
     else:
@@ -32,7 +62,22 @@ def cities(id=None):
 
 @app_views.route('/cities/<city_id>', methods=['DELETE'])
 def cities_delete(city_id=None):
-    """ delete city"""
+    """Cities
+    ---
+    tags:
+        - City
+    parameters:
+      - name: city_id
+        in: path
+        type: string
+    responses:
+      200:
+        description: List of states
+      404:
+        description: Resource not found
+      400:
+        description: Not a JSON
+    """
     obj_city = storage.get('City', city_id)
     if obj_city is None:
         abort(404)
@@ -41,10 +86,25 @@ def cities_delete(city_id=None):
     return jsonify({}), 200
 
 
-@app_views.route('/cities/<id>', methods=['PUT'])
-def city_put(id):
-    """ city put"""
-    obj_city = storage.get('City', id)
+@app_views.route('/cities/<city_id>', methods=['PUT'])
+def city_put(city_id):
+    """Cities
+    ---
+    tags:
+        - City
+    parameters:
+      - name: city_id
+        in: path
+        type: string
+    responses:
+      200:
+        description: List of states
+      404:
+        description: Resource not found
+      400:
+        description: Not a JSON
+    """
+    obj_city = storage.get('City', city_id)
     if obj_city is None:
         abort(404)
     do_put = request.get_json()
@@ -60,7 +120,25 @@ def city_put(id):
 
 @app_views.route('/states/<state_id>/cities', methods=['POST'])
 def city_post(state_id):
-    """ city post"""
+    """Create city
+     ---
+     tags:
+         - City
+     parameters:
+         - name: state_id
+           in: path
+           type: string
+         - name: name
+           in: body
+           type: dictionary
+     responses:
+       200:
+         description: New state
+       400:
+         description: Not a JSON
+       400:
+         description: Missind name
+    """
     obj_state = storage.get("State", state_id)
     if obj_state is None:
         abort(404)

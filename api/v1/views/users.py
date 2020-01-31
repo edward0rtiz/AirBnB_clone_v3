@@ -8,7 +8,16 @@ from models.user import User
 
 @app_views.route('/users', methods=['GET'])
 def user(id=None):
-    """user"""
+    """Show users
+    ---
+    tags:
+        - Users
+    responses:
+      200:
+        description: List of users
+      404:
+        description: Resource not found
+     """
     list_user = []
     for user_objs in storage.all('User').values():
             list_user.append(user_objs.to_dict())
@@ -17,7 +26,22 @@ def user(id=None):
 
 @app_views.route('/users/<id>', methods=['GET', 'DELETE', 'PUT'])
 def user_delete(id=None):
-    """user delete"""
+    """Users
+    ---
+    tags:
+        - Users
+    parameters:
+      - name: id
+        in: path
+        type: string
+    responses:
+      200:
+        description: List of states
+      404:
+        description: Resource not found
+      400:
+        description: Not a JSON
+    """
     obj_user = storage.get('User', id)
     if obj_user is None:
         abort(404)
@@ -38,7 +62,22 @@ def user_delete(id=None):
 
 @app_views.route('/users', methods=['POST'])
 def user_post():
-    """user post"""
+    """Create User
+     ---
+     tags:
+         - Users
+     parameters:
+         - name: name
+           in: body
+           type: dictionary
+     responses:
+       200:
+         description: New state
+       400:
+         description: Not a JSON
+       400:
+         description: Missind name
+    """
     if request.json:
         if "email" in request.json:
             if "password" in request.json:

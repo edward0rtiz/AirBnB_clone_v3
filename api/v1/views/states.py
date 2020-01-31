@@ -8,7 +8,16 @@ from models.state import State
 
 @app_views.route('/states')
 def state(id=None):
-    """state"""
+    """Show states
+    ---
+    tags:
+        - States
+    responses:
+      200:
+        description: List of states
+      404:
+        description: Resource not found
+     """
     list_state = []
     if id:
         state_objs = storage.get('State', id)
@@ -23,7 +32,22 @@ def state(id=None):
 
 @app_views.route('/states/<id>', methods=['GET', 'DELETE', 'PUT'])
 def state_delete(id=None):
-    """state delete"""
+    """States
+    ---
+    tags:
+        - States
+    parameters:
+      - name: id
+        in: path
+        type: string
+    responses:
+      200:
+        description: List of states
+      404:
+        description: Resource not found
+      400:
+        description: Not a JSON
+     """
     obj_state = storage.get('State', id)
     if obj_state is None:
         abort(404)
@@ -44,7 +68,22 @@ def state_delete(id=None):
 
 @app_views.route('/states', methods=['POST'])
 def state_post():
-    """state post"""
+    """Create states
+    ---
+    tags:
+        - States
+    parameters:
+        - name: name
+          in: body
+          type: dictionary
+    responses:
+      200:
+        description: New state
+      400:
+        description: Not a JSON
+      400:
+        description: Missind name
+     """
     if request.json:
         if "name" in request.json:
             do_post = request.get_json()
