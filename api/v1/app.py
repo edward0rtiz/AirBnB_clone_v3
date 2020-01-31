@@ -50,4 +50,4 @@ def not_found(e):
 
 if __name__ == '__main__':
     """Initialize api"""
-    app.run(host=host, port=int(port), threaded=True, debug=True)
+    app.run(host=host, port=int(port), threaded=True)
