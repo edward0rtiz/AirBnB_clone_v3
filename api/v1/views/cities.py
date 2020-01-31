@@ -36,7 +36,7 @@ def state_id(state_id=None):
 
 
 @app_views.route('/cities/<city_id>', methods=["GET"])
-def cities(id=None):
+def cities(city_id=None):
     """Cities
     ---
     tags:
